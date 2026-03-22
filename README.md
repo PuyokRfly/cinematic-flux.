@@ -3,11 +3,11 @@
 [![GitHub stars](https://img.shields.io/github/stars/yourusername/cinematic-flux.svg?style=social&label=Star)](https://github.com/yourusername/cinematic-flux)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![Cinematic Flux YouTube Downloader Dashboard UI](/home/puyok/.gemini/antigravity/brain/4d8587b5-3cab-4f49-97e1-92fafb42c0ed/dashboard_verification_1774181625781.png)
+![Cinematic Flux YouTube Downloader Dashboard UI](./assets/dashboard.png)
 
 **Cinematic Flux** is a high-performance **YouTube to MP3/MP4 downloader** designed specifically for **car audio systems (Avanza, Xpander, etc.)**. It bypasses the complexity of terminal commands with a stunning, futuristic dashboard. Originally built as an automated media ingestion tool for vehicle head-units, it allows you to dynamically fetch YouTube media, transcode it to high-quality audio formats, and sync it directly to external hardware (Flash Drives / USBs).
 
-![Cinematic Flux SSE Real-Time Download Progress Demo](/home/puyok/.gemini/antigravity/brain/4d8587b5-3cab-4f49-97e1-92fafb42c0ed/mp3_download_test_cinematic_flux_1774179215442.webp)
+![Cinematic Flux SSE Real-Time Download Progress Demo](./assets/demo.webp)
 
 ## 🌟 Why Cinematic Flux?
 
