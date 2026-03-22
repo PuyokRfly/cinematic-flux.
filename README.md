@@ -1,7 +1,8 @@
 # 🚀 Cinematic Flux: The Ultimate In-Car Media Dashboard
 
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/cinematic-flux.svg?style=social&label=Star)](https://github.com/yourusername/cinematic-flux)
+[![GitHub stars](https://img.shields.io/github/stars/PuyokRfly/cinematic-flux.svg?style=social&label=Star)](https://github.com/PuyokRfly/cinematic-flux)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 
 ![Cinematic Flux YouTube Downloader Dashboard UI](./assets/dashboard.png)
 
@@ -13,7 +14,9 @@
 
 If you've ever struggled to **download music for a car USB drive** on Linux or Windows, this tool is for you.
 - **Direct-to-USB:** Automatically writes files directly to your `/media/` or custom USB mount point.
-- **Real-time Sync:** Uses SSE (Server-Sent Events) for live download and extraction progress tracking without page reloads.
+- **Hot-Swappable Storage:** Change your media destination (USB, HDD, Network) directly from the UI without restarting the server.
+- **Seamless SPA Navigation:** Navigate between Dashboard, Archive History, Control Center (Settings), and Help instantly without any page reloads.
+- **Real-time Sync:** Uses SSE (Server-Sent Events) for live download and extraction progress tracking.
 - **Car Compatibility:** Auto-converts fetched media to 192kbps MP3 (FAT32 compatible) instantly ready for your Avanza, Xpander, or any head unit.
 - **Interactive Archive Viewer:** Keep track of your media interactively—browse and permanently delete files straight from the dashboard.
 - **Aesthetic Premium UI:** Premium Glassmorphic UI featuring glowing SVG data-rings natively built with Tailwind CSS.
@@ -28,7 +31,7 @@ The easiest way to run the Cinematic Flux dashboard is via Docker. Provide your 
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/cinematic-flux.git
+git clone https://github.com/PuyokRfly/cinematic-flux.git
 cd cinematic-flux
 
 # 2. Run with Docker Compose
@@ -71,12 +74,12 @@ Cinematic Flux was engineered to solve three specific data integrity challenges 
 Most web downloaders use long-polling or heavy WebSocket libraries (`Flask-SocketIO`). To keep the app lightweight, we implemented **Server-Sent Events (SSE)**. 
 Because `yt-dlp` naturally blocks the main thread during high-I/O downloads, we compartmentalized the download tasks into asynchronous background python threads coupled with `queue.Queue()`. The Flask endpoint then safely generator-yields the event stream directly to Vanilla JavaScript, giving us ultra-smooth, low-latency UI updates without websocket overheard.
 
-### 2. The Hardware Synchronization Challenge
+### 2. Live Environment Patching (.env Persistence)
+We implemented a secure **Config Patch** system that allows users to re-target their `DOWNLOAD_PATH` from the "Control Center" tab. When a user updates their mount point, the server not only clears the current session cache but also programmatically updates the `.env` file on disk, ensuring the preference survives hardware reboots.
+
+### 3. Hardware Synchronization & Integrity
 When pulling down heavy video files directly to an external FAT32 flash drive, Linux often caches the I/O in RAM. If the user yanks the flash drive out after the "Download Complete" prompt, the file corrupts.
 **Solution:** By programmatically enforcing kernel-level `os.sync()` triggers in the Flask background workers the absolute millisecond a download or deletion finishes, the dashboard guarantees 100% data physicalization before reporting "Saved" to the user.
-
-### 3. The Responsive Visual Design (Zero-JS-Framework)
-Instead of utilizing heavy SPA frameworks like React to handle state, Cinematic Flux relies entirely on standard DOM manipulation intertwined with TailwindCSS v3. The *Vault Status* SVG ring circumferences and offsets are dynamically calculated in Javascript, providing a native-feeling data visualization that operates identically fast on mobile screens and desktop instances.
 
 ---
 
