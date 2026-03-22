@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Puyok"
+    given-names: "Puyok"
+title: "Cinematic Flux: Advanced YouTube to MP3/MP4 Downloader for Car Audio"
+version: 1.0.0
+date-released: 2026-03-22
+url: "https://github.com/yourusername/cinematic-flux"
