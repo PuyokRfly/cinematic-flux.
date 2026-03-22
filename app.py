@@ -8,6 +8,7 @@ import queue
 import time
 import uuid
 import re
+import shutil
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -201,24 +202,62 @@ def progress(dl_id):
 @app.route('/vault-status')
 def vault_status():
     """Return real-time disk usage of the external drive."""
-    if not os.path.isdir(DOWNLOAD_PATH):
-        return jsonify({'error': 'Drive not mounted'}), 200  # 200 so UI handles gracefully
-
+    if not os.path.exists(DOWNLOAD_PATH):
+        return jsonify({"error": "Path not found"}), 404
+        
     try:
-        cmd = ['df', '-h', DOWNLOAD_PATH, '--output=pcent,used,avail,size']
-        result = subprocess.check_output(cmd, stderr=subprocess.DEVNULL).decode()
-        # Skip header line, parse data line
-        lines = result.strip().splitlines()
-        parts = lines[-1].split()
+        total, used, free = shutil.disk_usage(DOWNLOAD_PATH)
+        percent = (used / total) * 100 if total > 0 else 0
         return jsonify({
-            'percent':   parts[0].replace('%', ''),
-            'used':      parts[1],
-            'available': parts[2],
-            'total':     parts[3],
+            "total_bytes": total,
+            "used_bytes": used,
+            "free_bytes": free,
+            "percent_used": float(round(percent, 1))
         })
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
+@app.route('/config', methods=['GET', 'POST'])
+def handle_config():
+    global DOWNLOAD_PATH
+    if request.method == 'POST':
+        data = request.get_json(force=True)
+        new_path = data.get('download_path', '').strip()
+        if not new_path:
+            return jsonify({"error": "Path tidak boleh kosong"}), 400
+        
+        # Verify/Create path
+        try:
+            os.makedirs(new_path, exist_ok=True)
+            DOWNLOAD_PATH = new_path
+            
+            # Persist to .env
+            env_path = os.path.join(os.path.dirname(__file__), '.env')
+            env_lines = []
+            found = False
+            
+            if os.path.exists(env_path):
+                with open(env_path, 'r') as f:
+                    for line in f:
+                        if line.startswith('FLUX_DOWNLOAD_PATH='):
+                            env_lines.append(f"FLUX_DOWNLOAD_PATH={new_path}\n")
+                            found = True
+                        else:
+                            env_lines.append(line)
+            
+            if not found:
+                env_lines.append(f"FLUX_DOWNLOAD_PATH={new_path}\n")
+                
+            with open(env_path, 'w') as f:
+                f.writelines(env_lines)
+
+            return jsonify({"status": "success", "download_path": os.path.abspath(DOWNLOAD_PATH)})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+    return jsonify({
+        "download_path": os.path.abspath(DOWNLOAD_PATH)
+    })
 
 @app.route('/files', methods=['GET'])
 def list_files():
@@ -274,4 +313,4 @@ def delete_file(filename):
 if __name__ == '__main__':
     print(f"\n🎬 Cinematic Flux server starting on http://localhost:5000")
     print(f"   Output path: {DOWNLOAD_PATH}\n")
-    app.run(debug=False, port=5000, threaded=True)
+    app.run(debug=True, port=5000, threaded=True)
