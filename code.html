@@ -5,7 +5,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>The Cinematic Flux - Media Screening Room</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;600;700;800&family=Source+Code+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
@@ -13,76 +13,98 @@
           theme: {
             extend: {
               colors: {
-                "tertiary": "#fbabff",
-                "tertiary-container": "#f199f7",
-                "secondary-dim": "#ff716a",
-                "error": "#ff716c",
-                "error-container": "#9f0519",
-                "on-tertiary-container": "#5e106a",
-                "surface-container-highest": "#142156",
-                "on-secondary-fixed": "#70000c",
-                "tertiary-fixed": "#f199f7",
-                "primary-container": "#6e9fff",
-                "surface-container-lowest": "#000000",
-                "primary-fixed": "#6e9fff",
-                "primary-fixed-dim": "#5391ff",
-                "on-surface-variant": "#a1a9d5",
-                "tertiary-dim": "#e28ce9",
-                "inverse-on-surface": "#4b537a",
-                "outline-variant": "#3d466c",
-                "on-tertiary-fixed": "#3e0047",
-                "primary-dim": "#699cff",
-                "primary": "#85adff",
-                "secondary": "#ff716a",
-                "surface-tint": "#85adff",
-                "on-tertiary-fixed-variant": "#681c73",
-                "on-primary-fixed": "#000000",
-                "background": "#020a2f",
-                "secondary-container": "#a80619",
-                "on-background": "#e1e4ff",
-                "on-tertiary": "#691d74",
-                "on-error-container": "#ffa8a3",
-                "on-primary-container": "#002150",
-                "surface-container-high": "#0e1b4c",
-                "on-primary": "#002c66",
-                "inverse-surface": "#fbf8ff",
-                "surface-container-low": "#050f38",
-                "surface": "#020a2f",
-                "on-error": "#490006",
-                "on-secondary-container": "#ffdbd8",
-                "surface-container": "#091542",
-                "tertiary-fixed-dim": "#e28ce9",
-                "on-secondary": "#490005",
-                "surface-dim": "#020a2f",
-                "surface-variant": "#142156",
-                "on-surface": "#e1e4ff",
-                "secondary-fixed": "#ffc3be",
-                "on-primary-fixed-variant": "#002a62",
-                "error-dim": "#d7383b",
-                "on-secondary-fixed-variant": "#a50318",
-                "surface-bright": "#192760",
-                "outline": "#6b739d",
-                "secondary-fixed-dim": "#ffafa9",
-                "inverse-primary": "#005bc4"
+                "background": "hsl(var(--background))",
+                "on-background": "hsl(var(--foreground))",
+                "surface": "hsl(var(--card))",
+                "on-surface": "hsl(var(--card-foreground))",
+                "surface-variant": "hsl(var(--muted))",
+                "on-surface-variant": "hsl(var(--muted-foreground))",
+                "primary": "hsl(var(--primary))",
+                "on-primary": "hsl(var(--primary-foreground))",
+                "secondary": "hsl(var(--secondary))",
+                "on-secondary": "hsl(var(--secondary-foreground))",
+                "tertiary": "hsl(var(--accent))",
+                "on-tertiary": "hsl(var(--accent-foreground))",
+                "error": "hsl(var(--destructive))",
+                "on-error": "hsl(var(--destructive-foreground))",
+                "outline": "hsl(var(--border))",
+                "outline-variant": "hsl(var(--input))",
+                "surface-container": "hsl(var(--muted))",
+                "surface-container-low": "hsl(var(--muted) / 0.5)",
+                "surface-container-lowest": "hsl(var(--background))",
+                "surface-container-high": "hsl(var(--card))",
+                "surface-container-highest": "hsl(var(--secondary))",
+                "primary-container": "hsl(var(--primary) / 0.2)",
+                "on-primary-container": "hsl(var(--primary))",
+                "secondary-container": "hsl(var(--secondary) / 0.2)",
+                "on-secondary-container": "hsl(var(--secondary))",
+                "tertiary-container": "hsl(var(--accent) / 0.2)",
+                "on-tertiary-container": "hsl(var(--accent))",
               },
               fontFamily: {
-                "headline": ["Plus Jakarta Sans"],
-                "body": ["Manrope"],
-                "label": ["Manrope"]
+                "headline": ["Oxanium", "sans-serif"],
+                "body": ["Oxanium", "sans-serif"],
+                "label": ["Source Code Pro", "monospace"]
               },
-              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+              borderRadius: {"DEFAULT": "var(--radius)", "lg": "calc(var(--radius) + 4px)", "xl": "calc(var(--radius) + 8px)", "full": "9999px"},
             },
           },
         }
     </script>
-<style>
+    <style>
+        :root {
+            --background: 0 0% 80%;
+            --foreground: 0 0% 12.1569%;
+            --card: 0 0% 69.0196%;
+            --card-foreground: 0 0% 12.1569%;
+            --popover: 0 0% 69.0196%;
+            --popover-foreground: 0 0% 12.1569%;
+            --primary: 0 73.4597% 41.3725%;
+            --primary-foreground: 0 0% 100%;
+            --secondary: 82 38.9610% 30.1961%;
+            --secondary-foreground: 0 0% 100%;
+            --muted: 0 0% 72.1569%;
+            --muted-foreground: 0 0% 29.0196%;
+            --accent: 207.2727 44% 49.0196%;
+            --accent-foreground: 0 0% 100%;
+            --destructive: 26.1176 100% 50%;
+            --destructive-foreground: 0 0% 0%;
+            --border: 0 0% 31.3725%;
+            --input: 0 0% 31.3725%;
+            --ring: 0 73.4597% 41.3725%;
+            --radius: 0px;
+        }
+
+        .dark {
+            --background: 0 0% 10.1961%;
+            --foreground: 0 0% 87.8431%;
+            --card: 0 0% 16.4706%;
+            --card-foreground: 0 0% 87.8431%;
+            --popover: 0 0% 16.4706%;
+            --popover-foreground: 0 0% 87.8431%;
+            --primary: 1.3636 77.1930% 55.2941%;
+            --primary-foreground: 0 0% 100%;
+            --secondary: 92.0388 47.9070% 42.1569%;
+            --secondary-foreground: 0 0% 0%;
+            --muted: 0 0% 14.5098%;
+            --muted-foreground: 0 0% 62.7451%;
+            --accent: 206.7123 89.0244% 67.8431%;
+            --accent-foreground: 0 0% 0%;
+            --destructive: 37.6471 100% 50%;
+            --destructive-foreground: 0 0% 0%;
+            --border: 0 0% 29.0196%;
+            --input: 0 0% 29.0196%;
+            --ring: 1.3636 77.1930% 55.2941%;
+            --radius: 0px;
+        }
+
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
         body {
-            background-color: #020a2f;
-            color: #e1e4ff;
-            font-family: 'Manrope', sans-serif;
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            font-family: 'Oxanium', sans-serif;
         }
 
         /* Ooze / glow completion animation */
@@ -119,6 +141,11 @@
         #toast.show {
             opacity: 1 !important;
             transform: translateY(0) !important;
+        }
+        /* Player Modal */
+        #media-player-modal {
+            background-color: hsl(var(--background) / 0.95);
+            backdrop-filter: blur(12px);
         }
     </style>
 </head>
@@ -212,7 +239,7 @@
                                 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" data-icon="expand_more">expand_more</span>
                             </div>
                         </div>
-                        <button id="download-btn" onclick="startDownload()" class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container px-10 py-4 rounded-full font-headline font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
+                        <button id="download-btn" onclick="startDownload()" class="bg-primary hover:bg-primary/90 text-on-primary px-10 py-4 rounded-xl font-headline font-bold text-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all shadow-md flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1">download</span>
                             Download Now
                         </button>
@@ -255,14 +282,14 @@
         <!-- Sidebar / Widget Area -->
         <aside class="col-span-12 lg:col-span-4 space-y-8">
             <!-- Vault Status Widget -->
-            <section class="bg-surface-container-low rounded-xl p-8 sticky top-28 border border-outline-variant/10">
+            <section class="bg-surface-container-high rounded-xl p-8 sticky top-28 border border-outline">
                 <h3 class="font-headline text-lg font-bold mb-8 text-on-surface">Vault Status</h3>
                 <div class="flex flex-col items-center">
                     <!-- Progress Ring -->
                     <div class="relative w-48 h-48 flex items-center justify-center">
                         <svg class="w-full h-full transform -rotate-90" viewBox="0 0 192 192">
-                            <circle class="text-surface-variant/20" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-width="8"></circle>
-                            <circle id="vault-ring-progress" class="text-tertiary drop-shadow-[0_0_8px_rgba(251,171,255,0.4)]"
+                            <circle class="text-outline/10" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-width="8"></circle>
+                            <circle id="vault-ring-progress" class="text-primary"
                                     cx="96" cy="96" fill="transparent" r="88"
                                     stroke="currentColor"
                                     stroke-dasharray="553"
@@ -289,7 +316,7 @@
                             </span>
                             <span id="vault-available" class="text-on-surface font-bold">—</span>
                         </div>
-                        <div class="pt-4 border-t border-outline-variant/20">
+                        <div class="pt-4 border-t border-outline">
                             <div class="flex justify-between items-center text-xs">
                                 <span class="text-on-surface-variant">Total Capacity</span>
                                 <span id="vault-total" class="text-on-surface">—</span>
@@ -304,7 +331,7 @@
             </section>
 
             <!-- Pro Tip Card -->
-            <section class="bg-gradient-to-br from-surface-container-low to-surface-container rounded-xl p-6 border border-primary/10">
+            <section class="bg-surface-container-high rounded-xl p-6 border border-primary/20">
                 <div class="flex items-start justify-between mb-4">
                     <span class="material-symbols-outlined text-primary text-3xl" data-icon="auto_awesome">auto_awesome</span>
                     <span class="text-[10px] font-bold text-on-tertiary-container bg-tertiary-container px-2 py-0.5 rounded-full uppercase">Pro Tip</span>
@@ -394,6 +421,28 @@
             <div class="p-8 bg-surface-container-low rounded-3xl space-y-4">
                 <h3 class="text-xl font-bold text-on-surface">What formats are supported?</h3>
                 <p class="text-on-surface-variant leading-relaxed">We support high-definition MP4 videos and high-bitrate MP3 audio.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Player Modal -->
+    <div id="media-player-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 cursor-pointer" onclick="closePlayer()"></div>
+        <div class="relative w-full max-w-4xl bg-surface-container rounded-3xl overflow-hidden shadow-2xl border border-outline-variant/20 animate-in zoom-in-95 duration-300">
+            <div class="flex items-center justify-between p-6 border-b border-outline-variant/10">
+                <h3 id="player-title" class="font-headline font-bold text-on-surface truncate pr-8">Now Playing</h3>
+                <button onclick="closePlayer()" class="w-10 h-10 rounded-full hover:bg-surface-variant flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div id="player-container" class="aspect-video bg-black flex items-center justify-center">
+                <!-- Video/Audio element injected here -->
+            </div>
+            <div class="p-6 bg-surface-container-low flex items-center justify-between">
+                <span id="player-format" class="text-[10px] font-bold text-primary px-3 py-1 rounded-full bg-primary/10 uppercase tracking-widest">MP4</span>
+                <div class="flex gap-4">
+                    <button onclick="closePlayer()" class="px-6 py-2 rounded-xl bg-surface-variant text-on-surface text-sm font-bold">Close Player</button>
+                </div>
             </div>
         </div>
     </div>
@@ -524,17 +573,21 @@ async function loadFiles(containerId, limit = null) {
             const isAudio = ['mp3', 'wav', 'm4a'].includes(file.format);
             const fmtIcon = isAudio ? 'music_note' : 'videocam';
             const safeName = escHtml(file.name);
+            const thumbUrl = file.has_thumbnail ? `/thumbnail/${encodeURIComponent(file.name)}` : '';
             
             let html = '';
             if (containerId === 'archive-list') {
                 // Short card for Dashboard
                 html = `
-                    <div class="bg-surface-container-low rounded-xl p-4 flex gap-4 items-center border border-transparent hover:border-outline-variant/20 transition-all">
-                        <div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center">
-                            <span class="material-symbols-outlined text-xl text-tertiary">${fmtIcon}</span>
+                    <div class="bg-surface-container-low rounded-xl p-3 flex gap-4 items-center border border-transparent hover:border-outline-variant/20 transition-all group">
+                        <div class="w-16 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center relative overflow-hidden">
+                            ${thumbUrl ? `<img src="${thumbUrl}" class="w-full h-full object-cover">` : `<span class="material-symbols-outlined text-xl text-tertiary">${fmtIcon}</span>`}
+                            <button onclick="openPlayer('${safeName.replace(/'/g, "\\'")}', '${file.format}')" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                <span class="material-symbols-outlined text-white text-lg">play_arrow</span>
+                            </button>
                         </div>
                         <div class="overflow-hidden flex-1">
-                            <h4 class="text-sm font-bold text-on-surface truncate" title="${safeName}">${safeName}</h4>
+                            <h4 class="text-xs font-bold text-on-surface truncate" title="${safeName}">${safeName}</h4>
                             <p class="text-[10px] text-on-surface-variant">${file.size}</p>
                         </div>
                     </div>`;
@@ -543,7 +596,15 @@ async function loadFiles(containerId, limit = null) {
                 html = `
                     <div class="bg-surface-container-low rounded-2xl p-5 border border-outline-variant/10 hover:border-primary/30 transition-all group">
                         <div class="h-40 bg-surface-container-highest rounded-xl mb-4 flex items-center justify-center relative overflow-hidden">
-                            <span class="material-symbols-outlined text-5xl text-primary/20 group-hover:scale-110 transition-transform">${fmtIcon}</span>
+                            ${thumbUrl ? `<img src="${thumbUrl}" class="w-full h-full object-cover">` : `<span class="material-symbols-outlined text-5xl text-primary/20 group-hover:scale-110 transition-transform">${fmtIcon}</span>`}
+                            
+                            <!-- Large Play Overlay -->
+                            <button onclick="openPlayer('${safeName.replace(/'/g, "\\'")}', '${file.format}')" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                <div class="w-14 h-14 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-2xl scale-90 group-hover:scale-100 transition-transform">
+                                    <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1">play_arrow</span>
+                                </div>
+                            </button>
+
                             <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest text-white">${file.format}</div>
                         </div>
                         <h4 class="font-headline font-bold text-on-surface line-clamp-2 h-10 mb-2">${safeName}</h4>
@@ -555,7 +616,11 @@ async function loadFiles(containerId, limit = null) {
                              <button onclick="handleDelete(event, '${safeName.replace(/'/g, "\\'")}')" class="p-2 hover:bg-error/10 rounded-lg text-error transition-colors">
                                 <span class="material-symbols-outlined text-lg">delete</span>
                              </button>
-                             <span class="text-[10px] font-bold text-primary/60 border border-primary/20 px-2 py-1 rounded">SECURE_VAULT</span>
+                             <div class="flex gap-2">
+                                <button onclick="openPlayer('${safeName.replace(/'/g, "\\'")}', '${file.format}')" class="px-4 py-2 rounded-lg bg-primary/10 text-primary text-[10px] font-bold uppercase flex items-center gap-1 hover:bg-primary/20 transition-colors">
+                                    <span class="material-symbols-outlined text-sm">play_circle</span> Play
+                                </button>
+                             </div>
                         </div>
                     </div>`;
             }
@@ -717,6 +782,55 @@ function loadPrefs() {
         if (el) el.value = p.quality;
     }
 }
+
+// ── Media Player Logic ───────────────────────────────────────────────
+function openPlayer(filename, format) {
+    const modal = document.getElementById('media-player-modal');
+    const container = document.getElementById('player-container');
+    const titleEl = document.getElementById('player-title');
+    const formatEl = document.getElementById('player-format');
+    
+    titleEl.innerText = filename;
+    formatEl.innerText = format;
+    
+    const isAudio = ['mp3', 'wav', 'm4a'].includes(format.toLowerCase());
+    const streamUrl = `/stream/${encodeURIComponent(filename)}`;
+    
+    if (isAudio) {
+        container.innerHTML = `
+            <div class="flex flex-col items-center gap-6">
+                <div class="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
+                    <span class="material-symbols-outlined text-6xl text-primary">audiotrack</span>
+                </div>
+                <audio controls autoplay class="w-[400px]">
+                    <source src="${streamUrl}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>`;
+    } else {
+        container.innerHTML = `
+            <video controls autoplay class="w-full h-full">
+                <source src="${streamUrl}" type="video/mp4">
+                Your browser does not support the video element.
+            </video>`;
+    }
+    
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Prevent scroll
+}
+
+function closePlayer() {
+    const modal = document.getElementById('media-player-modal');
+    const container = document.getElementById('player-container');
+    container.innerHTML = ''; // Stop playback
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+// Close player on ESC
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closePlayer();
+});
 
 // ── Initialise ────────────────────────────────────────────────────────────
 function initApp() {

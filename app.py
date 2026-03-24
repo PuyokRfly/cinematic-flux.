@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response, jsonify
+from flask import Flask, render_template, request, Response, jsonify, send_from_directory
 import yt_dlp
 import threading
 import json
@@ -37,11 +37,20 @@ def make_progress_hook(dl_id):
             q = downloads[dl_id]['queue']
 
         if d['status'] == 'downloading':
-            percent_raw = d.get('_percent_str', '0%').strip().replace('%', '')
-            try:
-                percent = float(percent_raw)
-            except ValueError:
-                percent = 0.0
+            p_str = d.get('_percent_str')
+            if p_str:
+                p_clean = ansi_escape.sub('', p_str).strip().replace('%', '')
+                try:
+                    percent = float(p_clean)
+                except ValueError:
+                    percent = 0.0
+            else:
+                downloaded = d.get('downloaded_bytes')
+                total = d.get('total_bytes') or d.get('total_bytes_estimate')
+                if downloaded is not None and total:
+                    percent = round((downloaded / total) * 100, 1)
+                else:
+                    percent = 0.0
                 
             def clean_str(k):
                 val = d.get(k) or ''
@@ -63,11 +72,17 @@ def make_progress_hook(dl_id):
         elif d['status'] == 'finished':
             with downloads_lock:
                 downloads[dl_id]['status'] = 'finished'
+            
+            # Resolve safe filename
+            raw_path = d.get('info_dict', {}).get('_filename') or d.get('filename')
+            final_filename = os.path.basename(raw_path) if raw_path else "Unknown"
+            
             q.put({
                 'id':     dl_id,
                 'status': 'finished',
                 'title':  downloads[dl_id].get('title', 'Unknown'),
                 'format': downloads[dl_id].get('format', 'mp4'),
+                'filename': final_filename
             })
 
         elif d['status'] == 'error':
@@ -86,13 +101,20 @@ def make_progress_hook(dl_id):
 
 def extract_info(url, dl_id):
     """Extract video title without downloading."""
+    ydl_opts = {
+        'quiet': True, 
+        'skip_download': True,
+        'nocheckcertificate': True,
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+    }
     try:
-        with yt_dlp.YoutubeDL({'quiet': True, 'skip_download': True}) as ydl:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             title = info.get('title', 'Unknown')
             with downloads_lock:
                 if dl_id in downloads:
                     downloads[dl_id]['title'] = title
+                    downloads[dl_id]['thumbnail'] = info.get('thumbnail')
     except Exception:
         pass
 
@@ -103,20 +125,32 @@ def run_download(dl_id, url, fmt):
     hook = make_progress_hook(dl_id)
 
     opts = {
-        'format':          'bestaudio/best' if fmt == 'mp3' else 'bestvideo+bestaudio/best',
-        'outtmpl':         os.path.join(DOWNLOAD_PATH, '%(title).50s.%(ext)s'),
-        'progress_hooks':  [hook],
+        'format':          'bestaudio/best' if fmt == 'mp3' else 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
+        'outtmpl':         os.path.join(DOWNLOAD_PATH, '%(title)s.%(ext)s'),
+        'progress_hooks':  [make_progress_hook(dl_id)],
         'quiet':           True,
         'no_warnings':     True,
-        'merge_output_format': 'mp4' if fmt == 'mp4' else None,
+        'nocheckcertificate': True,
+        'ignoreerrors':    False,
+        'logtostderr':     False,
+        'writethumbnail':  True,
+        'user_agent':      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
     }
+    
+    opts['postprocessors'] = []
 
     if fmt == 'mp3':
-        opts['postprocessors'] = [{
+        opts['postprocessors'].append({
             'key':              'FFmpegExtractAudio',
             'preferredcodec':   'mp3',
-            'preferredquality': '192',
-        }]
+            'preferredquality': '320', # Ultra quality for Car Audio
+        })
+
+    # Always attempt to convert thumbnail to jpg
+    opts['postprocessors'].append({
+        'key': 'FFmpegThumbnailsConvertor',
+        'format': 'jpg',
+    })
 
     try:
         with yt_dlp.YoutubeDL(opts) as ydl:
@@ -197,6 +231,26 @@ def progress(dl_id):
             'X-Accel-Buffering': 'no',  # Disable nginx buffering if behind proxy
         }
     )
+@app.route('/stream/<path:filename>')
+def stream_media(filename):
+    """Streams video/audio files with support for HTTP Range requests."""
+    safe_name = os.path.basename(filename)
+    return send_from_directory(DOWNLOAD_PATH, safe_name)
+
+@app.route('/thumbnail/<path:filename>')
+def get_thumbnail(filename):
+    """Serves the thumbnail associated with a media file."""
+    safe_name = os.path.basename(filename)
+    base = os.path.splitext(safe_name)[0]
+    
+    # Try common thumbnail extensions
+    for ext in ['.jpg', '.png', '.webp', '.jpeg']:
+        thumb_path = os.path.join(DOWNLOAD_PATH, base + ext)
+        if os.path.exists(thumb_path):
+            return send_from_directory(DOWNLOAD_PATH, base + ext)
+            
+    return jsonify({"error": "Thumbnail not found"}), 404
+
 
 
 @app.route('/vault-status')
@@ -267,17 +321,31 @@ def list_files():
     
     files = []
     for f in os.listdir(DOWNLOAD_PATH):
+        # Only list media files, ignore thumbnails and parts
+        if f.endswith(('.jpg', '.png', '.webp', '.jpeg', '.part', '.ytdl')):
+            continue
+            
         path = os.path.join(DOWNLOAD_PATH, f)
         if os.path.isfile(path):
             try:
                 stats = os.stat(path)
                 size_mb = stats.st_size / (1024 * 1024)
+                base = os.path.splitext(f)[0]
+                
+                # Check for associated thumbnail
+                has_thumb = False
+                for ext in ['.jpg', '.png', '.webp', '.jpeg']:
+                    if os.path.exists(os.path.join(DOWNLOAD_PATH, base + ext)):
+                        has_thumb = True
+                        break
+
                 files.append({
                     "name": f,
                     "size": f"{size_mb:.2f} MB",
                     "format": f.split('.')[-1].lower() if '.' in f else 'unknown',
                     "date": time.strftime('%b %d, %Y', time.localtime(stats.st_mtime)),
-                    "timestamp": stats.st_mtime
+                    "timestamp": stats.st_mtime,
+                    "has_thumbnail": has_thumb
                 })
             except Exception:
                 pass
